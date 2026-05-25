@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <title>Motor de recomendación - Admin</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+        <link href="/css/admin.css" rel="stylesheet"/>
+    </head>
+    <body>
+
+        <%- include('../partials/navbarAdmin') %>
+
+        <div class="d-flex">
+
+            <%- include('../partials/sidebarAdmin', { currentPage: 'motor' }) %>
+
+            <div class="admin-content">
+
+                <h1 class="admin-page-title">Motor de recomendación</h1>
+                <% if(typeof flash !== 'undefined' && flash){ %>
+                    <div class="alert alert-<%= flash.type === 'success' ? 'success' : 'danger' %> alert-dismissible fade show">
+                        <%= flash.msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                <% } %>
+
+                <% if(typeof error !== 'undefined' && error){ %>
+                    <div class="alert alert-danger alert-dismissible fade show">
+                        <%= error %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                <% } %>
+
+                <% if(typeof msg !== 'undefined' && msg){ %>
+                    <div class="alert alert-success alert-dismissible fade show">
+                        <%= msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                <% } %>
+
+                <div class="admin-card p-3 mb-3">
+                    <p class="text-muted small mb-0">
+                        Los pesos son relativos entre sí y se normalizan automáticamente. 
+                        Mínimo 1 por parámetro. Si un factor no tiene datos disponibles 
+                        se excluye del cálculo y los demás se renormalizan.
+                    </p>
+                </div>
+
+                <form action="/admin/motor" method="POST">
+
+                    <div class="row g-3 mb-4">
+
+                        <div class="col-12 col-md-6">
+                            <div class="admin-card p-3">
+                                <div class="admin-motor-label">Emoción</div>
+                                <div class="admin-motor-desc">
+                                    Compatibilidad entre estado emocional, valencia e intensidad con la actividad
+                                </div>
+                                <div class="admin-motor-input-row">
+                                    <input
+                                        type="range"
+                                        name="emotion_weight"
+                                        min="1" max="10" step="1"
+                                        value="<%= config.emotion_weight %>"
+                                        class="form-range flex-grow-1"
+                                        oninput="this.nextElementSibling.textContent=this.value;updateTotal()"
+                                    >
+                                    <span class="admin-motor-val"><%= config.emotion_weight %></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <div class="admin-card p-3">
+                                <div class="admin-motor-label">Energía</div>
+                                <div class="admin-motor-desc">
+                                    Match entre nivel de energía del usuario y el requerido por la actividad
+                                </div>
+                                <div class="admin-motor-input-row">
+                                    <input
+                                        type="range"
+                                        name="energy_weight"
+                                        min="1" max="10" step="1"
+                                        value="<%= config.energy_weight %>"
+                                        class="form-range flex-grow-1"
+                                        oninput="this.nextElementSibling.textContent=this.value;updateTotal()"
+                                    >
+                                    <span class="admin-motor-val"><%= config.energy_weight %></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <div class="admin-card p-3">
+                                <div class="admin-motor-label">Historial personal</div>
+                                <div class="admin-motor-desc">
+                                    Mejora previa en el estado emocional del usuario con esta actividad
+                                </div>
+                                <div class="admin-motor-input-row">
+                                    <input
+                                        type="range"
+                                        name="personal_history"
+                                        min="1" max="10" step="1"
+                                        value="<%= config.personal_history %>"
+                                        class="form-range flex-grow-1"
+                                        oninput="this.nextElementSibling.textContent=this.value;updateTotal()"
+                                    >
+                                    <span class="admin-motor-val"><%= config.personal_history %></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <div class="admin-card p-3">
+                                <div class="admin-motor-label">Historial global</div>
+                                <div class="admin-motor-desc">
+                                    Mejora global en el estado emocional de los usuarios con esta actividad
+                                </div>
+                                <div class="admin-motor-input-row">
+                                    <input
+                                        type="range"
+                                        name="global_history"
+                                        min="1" max="10" step="1"
+                                        value="<%= config.global_history %>"
+                                        class="form-range flex-grow-1"
+                                        oninput="this.nextElementSibling.textContent=this.value;updateTotal()"
+                                    >
+                                    <span class="admin-motor-val"><%= config.global_history %></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <div class="admin-card p-3">
+                                <div class="admin-motor-label">Exploración</div>
+                                <div class="admin-motor-desc">
+                                    Penalización por recomendar actividades repetidas recientemente
+                                </div>
+                                <div class="admin-motor-input-row">
+                                    <input
+                                        type="range"
+                                        name="exploration"
+                                        min="1" max="10" step="1"
+                                        value="<%= config.exploration %>"
+                                        class="form-range flex-grow-1"
+                                        oninput="this.nextElementSibling.textContent=this.value;updateTotal()"
+                                    >
+                                    <span class="admin-motor-val"><%= config.exploration %></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <div class="admin-card p-3">
+                                <div class="admin-motor-label">Afinidad</div>
+                                <div class="admin-motor-desc">
+                                    Combinación de frecuencia de realización y valoración personal
+                                </div>
+                                <div class="admin-motor-input-row">
+                                    <input
+                                        type="range"
+                                        name="affinity"
+                                        min="1" max="10" step="1"
+                                        value="<%= config.affinity %>"
+                                        class="form-range flex-grow-1"
+                                        oninput="this.nextElementSibling.textContent=this.value;updateTotal()"
+                                    >
+                                    <span class="admin-motor-val"><%= config.affinity %></span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                        <span class="text-muted small">
+                            Peso total: <strong id="totalPeso"></strong> — se normaliza automáticamente
+                        </span>
+                        <button type="submit" class="admin-btn-primary">Guardar cambios</button>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+        <script>
+            function updateTotal() {
+                const inputs = document.querySelectorAll('input[type=range]');
+                const total  = Array.from(inputs).reduce((s, i) => s + parseInt(i.value), 0);
+                document.getElementById('totalPeso').textContent = total;
+            }
+            updateTotal();
+        </script>
+
+    </body>
+</html>

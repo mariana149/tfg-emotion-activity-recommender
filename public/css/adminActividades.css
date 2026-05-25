@@ -1,0 +1,61 @@
+.panel-admin {
+    border: none;
+    border-radius: 16px;
+}
+ 
+.buscador {
+    border-radius: 10px;
+    border: 1px solid #dee2e6;
+    padding: .55rem 1rem;
+    font-size: .875rem;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+ 
+.buscador:focus {
+    border-color: #84fab0;
+    box-shadow: 0 0 0 3px rgba(132, 250, 176, 0.25);
+    outline: none;
+}
+ 
+.btn-rec {
+    border: none;
+    padding: .55rem 1.4rem;
+    border-radius: 12px;
+    background: linear-gradient(to right, #84fab0, #8fd3f4);
+    color: #1a5c3a;
+    font-size: .875rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 3px 12px rgba(132, 250, 176, 0.5);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+ 
+.btn-rec:hover {
+    transform: scale(1.03);
+    box-shadow: 0 5px 18px rgba(132, 250, 176, 0.6);
+}
+ 
+.list-group-item {
+    border: none;
+    border-bottom: 1px solid #f0f0f0;
+    padding: .9rem .5rem;
+    transition: background 0.2s ease;
+}
+ 
+.list-group-item:last-child {
+    border-bottom: none;
+}
+ 
+.list-group-item:hover {
+    background: #f8fffe;
+}
+ 
+.list-group-item strong {
+    font-size: .9rem;
+    color: #222;
+}
+ 
+.list-group-item small {
+    color: #888;
+    font-size: .8rem;
+}

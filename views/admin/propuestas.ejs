@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <title>Propuestas - Admin</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+        <link href="/css/admin.css" rel="stylesheet"/>
+    </head>
+    <body>
+
+        <%- include('../partials/navbarAdmin') %>
+
+        <div class="d-flex">
+
+            <%- include('../partials/sidebarAdmin', { currentPage: 'propuestas' }) %>
+
+            <div class="admin-content">
+
+                <h1 class="admin-page-title">Actividades propuestas</h1>
+
+                <!-- MODAL VER -->
+                <div class="modal fade" id="modalVer" tabindex="-1">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="verNombre"></h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <table class="admin-table">
+                                    <tr><td class="text-muted">Descripción</td><td id="verDescripcion"></td></tr>
+                                    <tr><td class="text-muted">Categoría</td><td id="verCategoria"></td></tr>
+                                    <tr><td class="text-muted">Energía</td><td id="verEnergia"></td></tr>
+                                    <tr><td class="text-muted">Duración</td><td id="verDuracion"></td></tr>
+                                    <tr><td class="text-muted">Ubicación</td><td id="verIndoor"></td></tr>
+                                    <tr><td class="text-muted">Modalidad</td><td id="verIndividual"></td></tr>
+                                    <tr><td class="text-muted">Creada por</td><td id="verCreadaPor"></td></tr>
+                                </table>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-card">
+                    <div class="admin-card-header">
+                        <span class="fw-500">Pendientes de revisión</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Nombre</th>
+                                    <th class="d-none d-md-table-cell">Categoría</th>
+                                    <th class="d-none d-md-table-cell">Energía</th>
+                                    <th class="d-none d-lg-table-cell">Creador</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tablaPropuestas">
+                                <tr><td colspan="5" class="text-muted">Cargando...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+        <script src="/js/adminPropuestas.js"></script>
+    </body>
+</html>

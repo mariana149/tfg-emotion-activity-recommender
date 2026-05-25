@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <title>Explotación de datos - Admin</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+        <link href="/css/admin.css" rel="stylesheet"/>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
+    </head>
+    <body>
+
+        <%- include('../partials/navbarAdmin') %>
+
+        <div class="d-flex">
+            <%- include('../partials/sidebarAdmin', { currentPage: 'explotacion' }) %>
+
+            <div class="admin-content">
+
+                <!-- CABECERA -->
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                    <div>
+                        <h1 class="admin-page-title mb-1">Explotación de datos</h1>
+                        <small class="text-muted">
+                            <%= datos.periodoAnalisis %> · Generado el <%= datos.generadoEn %>
+                        </small>
+                    </div>
+                    <a href="/admin/explotacion/pdf" class="btn btn-danger" target="_blank">
+                        <i class="bi bi-file-pdf me-2"></i>Descargar informe PDF
+                    </a>
+                </div>
+
+                <!-- KPIs GENERALES -->
+                <% const r = datos.resumen; const eng = datos.engagement; %>
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="card text-center p-3 shadow-sm">
+                            <div class="fs-3 fw-bold text-success"><%= r.total_usuarios %></div>
+                            <small class="text-muted">Usuarios</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="card text-center p-3 shadow-sm">
+                            <div class="fs-3 fw-bold text-primary"><%= r.total_realizaciones %></div>
+                            <small class="text-muted">Realizaciones</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="card text-center p-3 shadow-sm">
+                            <div class="fs-3 fw-bold text-warning"><%= r.total_emociones %></div>
+                            <small class="text-muted">Emociones</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="card text-center p-3 shadow-sm">
+                            <div class="fs-3 fw-bold text-success"><%= eng.activos.length %></div>
+                            <small class="text-muted">🟢 Activos (7d)</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="card text-center p-3 shadow-sm">
+                            <div class="fs-3 fw-bold text-warning"><%= eng.inactivos.length %></div>
+                            <small class="text-muted">🟡 Inactivos</small>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-4 col-lg-2">
+                        <div class="card text-center p-3 shadow-sm">
+                            <div class="fs-3 fw-bold text-danger"><%= eng.abandonados.length %></div>
+                            <small class="text-muted">🔴 Abandonados</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- INSIGHTS -->
+                <% if (datos.insights && datos.insights.length > 0) { %>
+                <div class="card shadow-sm p-4 mb-4">
+                    <h5 class="mb-3"><i class="bi bi-lightbulb me-2 text-warning"></i>Insights automáticos</h5>
+                    <div class="row g-3">
+                        <% datos.insights.forEach(ins => { %>
+                        <div class="col-12 col-md-6">
+                            <div class="alert alert-<%= ins.tipo === 'danger' ? 'danger' : ins.tipo === 'warning' ? 'warning' : ins.tipo === 'success' ? 'success' : 'info' %> mb-0 h-100">
+                                <div class="fw-bold mb-1"><%= ins.icono %> <%= ins.titulo %></div>
+                                <div class="small mb-2"><%= ins.mensaje %></div>
+                                <div class="small fst-italic"><strong>→</strong> <%= ins.recomendacion %></div>
+                            </div>
+                        </div>
+                        <% }) %>
+                    </div>
+                </div>
+                <% } %>
+
+                <!-- EMOCIÓN PREDOMINANTE + GRÁFICA -->
+                <div class="row g-4 mb-4">
+                    <div class="col-12 col-lg-7">
+                        <div class="card shadow-sm p-4 h-100">
+                            <h5 class="mb-3"><i class="bi bi-emoji-smile me-2 text-warning"></i>Usuarios por emoción predominante</h5>
+                            <div class="table-responsive">
+                                <table class="table table-sm table-hover">
+                                    <thead class="table-dark">
+                                        <tr><th>Usuario</th><th>Emoción predominante</th><th class="text-center">Registros</th></tr>
+                                    </thead>
+                                    <tbody>
+                                        <% datos.usuariosPorEmocion.forEach(u => { %>
+                                        <tr>
+                                            <td><%= u.nombre %> <%= u.apellidos %></td>
+                                            <td><%= u.label %></td>
+                                            <td class="text-center"><%= u.total %></td>
+                                        </tr>
+                                        <% }) %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-5">
+                        <div class="card shadow-sm p-4 h-100">
+                            <h5 class="mb-3"><i class="bi bi-pie-chart me-2 text-warning"></i>Distribución</h5>
+                            <canvas id="chartEmociones" height="250"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROBLEMAS EMOCIONALES -->
+                <div class="card shadow-sm p-4 mb-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <h5 class="mb-0"><i class="bi bi-exclamation-triangle me-2 text-danger"></i>Usuarios con indicadores de malestar</h5>
+                        <span class="badge bg-danger ms-2"><%= datos.problemasEmocionales.length %></span>
+                    </div>
+                    <p class="text-muted small mb-3">
+                        Criterios (últimos 7 días): emociones negativas &gt;50% · valencia media &lt;-0.5 · tendencia negativa.
+                        Se considera en riesgo si cumple ≥2 criterios.
+                    </p>
+                    <% if (datos.problemasEmocionales.length === 0) { %>
+                    <div class="alert alert-success mb-0">
+                        <i class="bi bi-check-circle me-2"></i>No se detectan usuarios en riesgo en los últimos 7 días.
+                    </div>
+                    <% } else { %>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover">
+                            <thead class="table-dark">
+                                <tr><th>Usuario</th><th>Criterios cumplidos</th><th class="text-center">% Emoc. neg.</th><th class="text-center">Valencia media</th><th class="text-center">Tendencia</th></tr>
+                            </thead>
+                            <tbody>
+                                <% datos.problemasEmocionales.forEach(u => { %>
+                                <tr>
+                                    <td><%= u.nombre %> <%= u.apellidos %></td>
+                                    <td>
+                                        <% u.criterios.forEach(c => { %>
+                                        <span class="badge <%= u.criterios.length === 3 ? 'bg-danger' : 'bg-warning text-dark' %> me-1"><%= c %></span>
+                                        <% }) %>
+                                    </td>
+                                    <td class="text-center"><%= u.pct_negativas != null ? u.pct_negativas + '%' : '-' %></td>
+                                    <td class="text-center"><%= u.valencia_media != null ? u.valencia_media : '-' %></td>
+                                    <td class="text-center"><%= u.tendencia || '-' %></td>
+                                </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                    <% } %>
+                </div>
+
+                <!-- USUARIOS MÁS ACTIVOS -->
+                <div class="card shadow-sm p-4 mb-4">
+                    <h5 class="mb-3"><i class="bi bi-trophy me-2 text-warning"></i>Usuarios más activos</h5>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover">
+                            <thead class="table-dark">
+                                <tr><th>#</th><th>Usuario</th><th class="text-center">Realizaciones</th><th class="text-center">Actividades únicas</th><th class="text-center">Valoración</th></tr>
+                            </thead>
+                            <tbody>
+                                <% datos.usuariosMasActivos.forEach((u, i) => { %>
+                                <tr>
+                                    <td><%= i + 1 %></td>
+                                    <td><%= u.nombre %> <%= u.apellidos %></td>
+                                    <td class="text-center"><%= u.actividades_realizadas %></td>
+                                    <td class="text-center"><%= u.actividades_distintas %></td>
+                                    <td class="text-center"><%= u.valoracion_media ? u.valoracion_media + ' ⭐' : '-' %></td>
+                                </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- IMPACTO EMOCIONAL -->
+                <div class="card shadow-sm p-4 mb-4">
+                    <h5 class="mb-3"><i class="bi bi-heart-pulse me-2 text-success"></i>Impacto emocional y efectividad del algoritmo</h5>
+                    <% const ef = datos.efectividad %>
+                    <div class="row g-3 mb-3">
+                        <div class="col-6 col-md-3 text-center">
+                            <div class="fs-4 fw-bold"><%= ef.total %></div><small class="text-muted">Recomendaciones</small>
+                        </div>
+                        <div class="col-6 col-md-3 text-center">
+                            <div class="fs-4 fw-bold text-success"><%= ef.aceptadas %></div><small class="text-muted">Aceptadas</small>
+                        </div>
+                        <div class="col-6 col-md-3 text-center">
+                            <div class="fs-4 fw-bold text-danger"><%= ef.rechazadas %></div><small class="text-muted">Rechazadas</small>
+                        </div>
+                        <div class="col-6 col-md-3 text-center">
+                            <div class="fs-4 fw-bold text-primary"><%= ef.pct_aceptacion || 0 %>%</div><small class="text-muted">% Aceptación</small>
+                        </div>
+                    </div>
+                    <% if (datos.impactoActividades.length > 0) { %>
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover">
+                            <thead class="table-dark">
+                                <tr><th>Actividad</th><th class="text-center">Realizaciones</th><th class="text-center">Mejora valence</th><th class="text-center">% mejoran</th><th class="text-center">Rating</th></tr>
+                            </thead>
+                            <tbody>
+                                <% datos.impactoActividades.forEach(a => { %>
+                                <tr>
+                                    <td><%= a.name %></td>
+                                    <td class="text-center"><%= a.total %></td>
+                                    <td class="text-center">
+                                        <span class="badge <%= a.mejora_media > 0 ? 'bg-success' : 'bg-danger' %>">
+                                            <%= a.mejora_media > 0 ? '+' : '' %><%= a.mejora_media %>
+                                        </span>
+                                    </td>
+                                    <td class="text-center"><%= a.pct_mejora %>%</td>
+                                    <td class="text-center"><%= a.rating_medio ? a.rating_medio + ' ⭐' : '-' %></td>
+                                </tr>
+                                <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                    <% } else { %>
+                    <p class="text-muted small">Sin datos de emoción before/after registrados aún.</p>
+                    <% } %>
+                </div>
+
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+        <script>
+            const emocionUsuarios = <%- JSON.stringify(datos.usuariosPorEmocion) %>;
+            const agrupado = {};
+            emocionUsuarios.forEach(u => { agrupado[u.label] = (agrupado[u.label] || 0) + 1; });
+
+            new Chart(document.getElementById('chartEmociones'), {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(agrupado),
+                    datasets: [{
+                        data: Object.values(agrupado),
+                        backgroundColor: ['#16a34a','#2563eb','#6b7280','#dc2626','#f59e0b','#7c3aed'],
+                    }]
+                },
+                options: {
+                    plugins: { legend: { position: 'bottom', labels: { font: { size: 11 } } } },
+                    cutout: '55%'
+                }
+            });
+        </script>
+    </body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <title>Dashboard - Admin</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+        <link href="/css/admin.css" rel="stylesheet"/>
+    </head>
+    <body>
+
+        <%- include('../partials/navbarAdmin') %>
+
+        <div class="d-flex">
+
+            <%- include('../partials/sidebarAdmin', { currentPage: 'dashboard' }) %>
+
+            <div class="admin-content">
+
+                <h1 class="admin-page-title">Dashboard</h1>
+
+                <div class="row g-3 mb-4">
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <div class="admin-stat-card">
+                            <div class="admin-stat-label">Usuarios</div>
+                            <div class="admin-stat-value"><%= stats.usuarios.total %></div>
+                            <div class="admin-stat-sub"><%= stats.usuarios.activos %> activos</div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <div class="admin-stat-card">
+                            <div class="admin-stat-label">Actividades</div>
+                            <div class="admin-stat-value"><%= stats.actividades.total %></div>
+                            <div class="admin-stat-sub"><%= stats.actividades.activas %> activas</div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <div class="admin-stat-card">
+                            <div class="admin-stat-label">Valoración media</div>
+                            <div class="admin-stat-value"><%= stats.valoracionMedia %> / 5</div>
+                            <% if(stats.mejorActividad){ %>
+                                <div class="admin-stat-highlight">Mejor: <%= stats.mejorActividad.name %> (<%= stats.mejorActividad.media %>)</div>
+                            <% } %>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <div class="admin-stat-card">
+                            <div class="admin-stat-label">Emociones registradas</div>
+                            <div class="admin-stat-value"><%= stats.totalEmociones %></div>
+                            <% if(stats.emocionFrecuente && emotionMap[stats.emocionFrecuente.emotion]){ %>
+                                <div class="admin-stat-highlight">
+                                    Más frecuente: <%= emotionMap[stats.emocionFrecuente.emotion].emoji %> <%= emotionMap[stats.emocionFrecuente.emotion].label %>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <div class="admin-stat-card">
+                            <div class="admin-stat-label">Recomendaciones</div>
+                            <div class="admin-stat-value"><%= stats.totalRecomendaciones %></div>
+                            <div class="admin-stat-sub">generadas en total</div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-4">
+                        <div class="admin-stat-card">
+                            <div class="admin-stat-label">Actividades realizadas</div>
+                            <div class="admin-stat-value"><%= stats.totalRealizadas %></div>
+                            <div class="admin-stat-highlight">Impacto positivo: <%= stats.impactoPositivo %>%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-12 col-md-4">
+                        <div class="admin-card p-3">
+                            <div class="admin-stat-label mb-3">Evolución emocional global</div>
+                                <div class="admin-chart-container">
+                                    <canvas id="graficaEvolucion"></canvas>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="admin-card p-3">
+                            <div class="admin-stat-label mb-3">Impacto antes vs después</div>
+                                <div class="admin-chart-container">
+                                    <canvas id="graficaImpacto"></canvas>
+                                </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="admin-card p-3">
+                            <div class="admin-stat-label mb-3 ">Distribución de emociones</div>
+                            <div class="admin-chart-container">
+                                <canvas id="graficaDistribucion"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1/dist/chart.umd.min.js"></script>
+        <script>
+            const graficas = <%- JSON.stringify(graficas) %>;
+            const emotionMap = { 1:'Feliz', 2:'Calma', 3:'Neutral', 4:'Triste', 5:'Estrés', 6:'Ansiedad' };
+
+            new Chart(document.getElementById('graficaEvolucion'), {
+                type: 'line',
+                data: {
+                    labels: graficas.evolucion.map((_, i) => i + 1),
+                    datasets: [{
+                        label: 'Valence',
+                        data: graficas.evolucion.map(e => e.valence),
+                        borderColor: '#84fab0',
+                        backgroundColor: 'rgba(132,250,176,0.1)',
+                        tension: 0.3,
+                        fill: true,
+                        pointRadius: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { min: -2, max: 1 } }
+                }
+            });
+
+            new Chart(document.getElementById('graficaImpacto'), {
+                type: 'bar',
+                data: {
+                    labels: graficas.impacto.map(a => a.name),
+                    datasets: [
+                        { label: 'Antes', data: graficas.impacto.map(a => a.antes), backgroundColor: '#F09595' },
+                        { label: 'Después', data: graficas.impacto.map(a => a.despues), backgroundColor: '#84fab0' }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+
+            new Chart(document.getElementById('graficaDistribucion'), {
+                type: 'doughnut',
+                data: {
+                    labels: graficas.distribucion.map(e => emotionMap[e.emotion] || e.emotion),
+                    datasets: [{
+                        data: graficas.distribucion.map(e => e.total),
+                        backgroundColor: ['#84fab0','#8fd3f4','#a8e6cf','#FFD700','#F09595','#b39ddb']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+        </script>
+
+    </body>
+</html>

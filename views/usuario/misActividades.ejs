@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <title>Mis actividades</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+        <link href="/css/colors.css" rel="stylesheet"/>
+        <link href="/css/usuario.css" rel="stylesheet"/>
+    </head>
+    <body>
+
+        <%- include('../partials/navbarUsuario') %>
+
+        <div class="d-flex">
+
+            <%- include('../partials/sidebarUsuario', { currentPage: 'mis-actividades' }) %>
+
+            <div class="usuario-content">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="usuario-page-title mb-0">Mis actividades</h1>
+                    <button class="btn gradient-custom text-dark" data-bs-toggle="modal" data-bs-target="#modalCrear">
+                        <i class="bi bi-plus-lg"></i>
+                        <span class="d-none d-sm-inline ms-1">Crear actividad</span>
+                    </button>
+                </div>
+
+                <!-- FILTROS -->
+                <div class="mb-4 d-flex gap-2 flex-wrap">
+                    <button class="btn btn-sm btn-outline-secondary active" data-filtro="todas">Todas</button>
+                    <button class="btn btn-sm btn-outline-secondary" data-filtro="borrador">Borrador</button>
+                    <button class="btn btn-sm btn-outline-secondary" data-filtro="propuesta">Propuesta</button>
+                    <button class="btn btn-sm btn-outline-secondary" data-filtro="publicada">Publicada</button>
+                </div>
+
+                <!-- LISTA -->
+                <div id="listaMisActividades">
+                    <p class="text-muted">Cargando...</p>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- MODAL CREAR -->
+        <div class="modal fade" id="modalCrear" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Nueva actividad</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label">Nombre</label>
+                                <input type="text" id="crearNombre" class="form-control" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">Descripción</label>
+                                <textarea id="crearDescripcion" class="form-control" rows="3"></textarea>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <label class="form-label">Categoría</label>
+                                <select id="crearCategoria" class="form-select">
+                                    <option value="">Sin categoría</option>
+                                    <option value="1">Relajación</option>
+                                    <option value="2">Actividad física</option>
+                                    <option value="3">Creatividad</option>
+                                    <option value="4">Social</option>
+                                    <option value="5">Bienestar</option>
+                                    <option value="6">Naturaleza</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <label class="form-label">Nivel de energía</label>
+                                <select id="crearEnergia" class="form-select">
+                                    <option value="baja">Baja</option>
+                                    <option value="media">Media</option>
+                                    <option value="alta">Alta</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-sm-6">
+                                <label class="form-label">Duración (minutos)</label>
+                                <input type="number" id="crearDuracion" class="form-control">
+                            </div>
+                            <div class="col-12 col-sm-6 d-flex align-items-end gap-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="crearIndoor">
+                                    <label class="form-check-label" for="crearIndoor">Interior</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="crearIndividual">
+                                    <label class="form-check-label" for="crearIndividual">Individual</label>
+                                </div>
+                            </div>
+                        </div>
+                        <p id="errorCrear" class="text-danger small d-none mt-3">Error al crear la actividad</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="btnGuardarActividad">Guardar como borrador</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL EDITAR -->
+        <div class="modal fade" id="modalEditar" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Editar actividad</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Nombre</label>
+                            <input type="text" id="editNombre" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Descripción</label>
+                            <textarea id="editDescripcion" class="form-control" rows="3"></textarea>
+                        </div>
+                        <p id="errorEditar" class="text-danger small d-none">Error al guardar</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="btnGuardarEdicion">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- MODAL VER DETALLE -->
+        <div class="modal fade" id="modalVer" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="verNombre"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <table class="table table-sm">
+                            <tr><td class="text-muted">Descripción</td><td id="verDescripcion"></td></tr>
+                            <tr><td class="text-muted">Categoría</td><td id="verCategoria"></td></tr>
+                            <tr><td class="text-muted">Energía</td><td id="verEnergia"></td></tr>
+                            <tr><td class="text-muted">Duración</td><td id="verDuracion"></td></tr>
+                            <tr><td class="text-muted">Ubicación</td><td id="verIndoor"></td></tr>
+                            <tr><td class="text-muted">Modalidad</td><td id="verModalidad"></td></tr>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+        <script src="/js/misActividades.js"></script>
+    </body>
+</html>

@@ -1,0 +1,147 @@
+.gradient-custom{
+    background: linear-gradient(to right, rgba(132,250,176,1), rgba(143,211,244,1));
+  
+}
+.login-color{
+  background-color: #eef0f2;
+
+}
+.disclaimer {
+    color: #333 !important;
+    font-size: 1rem;
+}
+button {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+button:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+button:active {
+  transform: translateY(1px); 
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 1.5s forwards;
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+.link-underline-slide {
+  position: relative;
+  color: inherit;
+  text-decoration: none;
+}
+
+.link-underline-slide::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 0;
+  height: 2px;
+  background-color: currentColor;
+  transition: width 0.3s ease;
+}
+
+.link-underline-slide:hover::after {
+  width: 100%;
+}
+
+.custom-border {
+  border-color: #84fab0;
+}
+.custom-border:hover {
+  background: linear-gradient(to right, rgba(132,250,176,1), rgba(143,211,244,1));
+}
+#iconoPerfil{
+  height:2.5rem;
+  width: auto;
+}
+#iconoLogo{
+  height:4rem;
+  width: auto;
+}
+#calendar {
+    background: white;
+    border-radius: 12px;
+}
+
+.card {
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.list-group-item {
+    border-radius: 8px;
+    margin-bottom: 4px;
+}
+
+.card-removing {
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.25s ease-in-out;
+}
+
+#listaDisponibles,
+#listaCreadas {
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+#avatarPerfil{
+  animation: float 3s ease-in-out infinite;
+}
+.fc .fc-daygrid-day-number {
+    color: #333;
+    text-decoration: none;
+}
+
+.fc .fc-col-header-cell-cushion {
+    color: #333;
+    text-decoration: none;
+}
+
+.fc .fc-toolbar-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1e2a3a;
+}
+
+.fc .fc-button,
+.fc .fc-button:hover,
+.fc .fc-button:active,
+.fc .fc-button:focus,
+.fc .fc-button:disabled,
+.fc .fc-button-active {
+    background:#9ca3af !important;
+    border: none !important;
+    color: white !important;
+    font-weight: 400;
+    box-shadow: none !important;
+    opacity: 1 !important;
+}
+.fc .fc-button:hover {
+    background: #6b7280 !important;
+}
+.fc .fc-daygrid-event-dot {
+    border-color: inherit !important;
+}
+
+.fc .fc-event-title,
+.fc .fc-event-time {
+    color: black !important;
+}
+

@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <title>Mi perfil</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+        <link href="/css/colors.css" rel="stylesheet"/>
+        <link href="/css/usuario.css" rel="stylesheet"/>
+    </head>
+    <body>
+
+        <%- include('../partials/navbarUsuario') %>
+
+        <div class="d-flex">
+
+            <%- include('../partials/sidebarUsuario', { currentPage: 'perfil' }) %>
+
+            <div class="usuario-content">
+
+                <% if(flash){ %>
+                    <div class="alert alert-<%= flash.type === 'success' ? 'success' : 'danger' %> alert-dismissible fade show mb-4">
+                        <%= flash.msg %>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                <% } %>
+
+                <!-- BANNER -->
+                <div class="perfil-banner gradient-custom rounded-3 mb-4 p-4 d-flex align-items-center gap-4">
+                    <img
+                        src="<%= usuario.foto || '/img/defaultFoto.png' %>"
+                        class="rounded-circle perfil-banner-avatar"
+                        id="avatarPerfil"
+                    >
+                    <div class="flex-grow-1">
+                        <h4 class="mb-1"><%= usuario.nombre %> <%= usuario.apellidos %></h4>
+                        <p class="mb-3 text-muted"><%= usuario.email %></p>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#modalFoto">
+                                <i class="bi bi-camera me-1"></i>Cambiar foto
+                            </button>
+                            <button class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#modalDatos">
+                                <i class="bi bi-pencil me-1"></i>Editar perfil
+                            </button>
+                            <button class="btn btn-sm btn-light" data-bs-toggle="modal" data-bs-target="#modalPassword">
+                                <i class="bi bi-lock me-1"></i>Cambiar contraseña
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-4">
+
+                    <!-- INFORMACIÓN PERSONAL -->
+                    <div class="col-12 col-lg-6">
+                        <div class="card shadow-sm h-100">
+                            <div class="card-body">
+                                <h5 class="mb-4">Información personal</h5>
+                                <div class="row mb-3">
+                                    <div class="col-5 text-muted">Nombre</div>
+                                    <div class="col-7"><%= usuario.nombre %> <%= usuario.apellidos %></div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-5 text-muted">Email</div>
+                                    <div class="col-7"><%= usuario.email %></div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div class="col-5 text-muted">País</div>
+                                    <div class="col-7"><%= usuario.pais || '—' %></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-5 text-muted">Ciudad</div>
+                                    <div class="col-7"><%= usuario.ciudad || '—' %></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SEGURIDAD Y ACCIONES -->
+                    <div class="col-12 col-lg-6">
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <h5 class="mb-3">Zona de peligro</h5>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <p class="mb-0 fw-semibold">Eliminar cuenta</p>
+                                        <p class="text-muted small mb-0">Esta acción no se puede deshacer</p>
+                                    </div>
+                                    <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalEliminar">
+                                        Eliminar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL FOTO -->
+        <div class="modal fade" id="modalFoto" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Foto de perfil</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <img
+                            src="<%= usuario.foto || '/img/defaultFoto.png' %>"
+                            class="rounded-circle mb-3"
+                            width="100"
+                            id="previewFoto"
+                        >
+                        <p id="errorFoto" class="text-danger small d-none">Selecciona una foto primero</p>
+                        <input type="file" id="inputFoto" accept="image/*" class="form-control mb-3">
+                    </div>
+                    <div class="modal-footer">
+                        <button
+                            id="btnQuitarFoto"
+                            class="btn btn-outline-danger me-auto <%= usuario.foto ? '' : 'd-none' %>"
+                            onclick="eliminarFoto()">
+                            Quitar foto
+                        </button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button class="btn btn-primary" onclick="subirFoto()">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL EDITAR DATOS -->
+        <div class="modal fade" id="modalDatos" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Editar perfil</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form action="/modificarPerfil" method="POST">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label">Nombre</label>
+                                <input type="text" name="nombre" class="form-control" value="<%= usuario.nombre %>" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Apellidos</label>
+                                <input type="text" name="apellidos" class="form-control" value="<%= usuario.apellidos %>" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Email</label>
+                                <input type="email" name="email" class="form-control" value="<%= usuario.email %>" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">País</label>
+                                <input type="text" name="pais" class="form-control" value="<%= usuario.pais %>">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Ciudad</label>
+                                <input type="text" name="ciudad" class="form-control" value="<%= usuario.ciudad %>">
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL CAMBIAR CONTRASEÑA -->
+        <div class="modal fade" id="modalPassword" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Cambiar contraseña</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form action="/changePassword" method="POST">
+                        <div class="modal-body">
+                            <div class="mb-3">
+                                <label class="form-label">Nueva contraseña</label>
+                                <input type="password" name="newPassword" class="form-control" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Repetir contraseña</label>
+                                <input type="password" id="repetirPassword" class="form-control" required>
+                            </div>
+                            <p id="errorPassword" class="text-danger small d-none">Las contraseñas no coinciden</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-primary" id="btnGuardarPassword">Guardar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL ELIMINAR CUENTA -->
+        <div class="modal fade" id="modalEliminar" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-danger">Eliminar cuenta</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>¿Seguro que quieres eliminar tu cuenta? Esta acción eliminará todos tus datos y no se puede deshacer.</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <form action="/eliminarCuenta" method="POST">
+                            <button type="submit" class="btn btn-danger">Eliminar cuenta</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+        <script src="/js/perfil.js"></script>
+    </body>
+</html>

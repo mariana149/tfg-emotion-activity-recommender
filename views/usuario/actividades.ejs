@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <title>Actividades</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+        <link href="/css/colors.css" rel="stylesheet"/>
+        <link href="/css/actividades.css" rel="stylesheet"/>
+        <link href="/css/usuario.css" rel="stylesheet"/>
+    </head>
+    <body>
+
+        <%- include('../partials/navbarUsuario') %>
+
+        <div class="d-flex">
+
+            <%- include('../partials/sidebarUsuario', { currentPage: 'actividades' }) %>
+
+            <div class="usuario-content">
+
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
+                    <div>
+                        <h1 class="usuario-page-title mb-1">Actividades</h1>
+                        <p class="text-muted mb-0">Explora, guarda o realiza una actividad.</p>
+                    </div>
+                </div>
+                <!-- BUSCADOR -->
+                <div class="mb-3">
+                    <input type="text" id="buscador" class="form-control" 
+                        placeholder="Buscar actividad..." autocomplete="off">
+                </div>
+                <!-- FILTROS -->
+                <div class="mb-4">
+                    <div class="filtros-container">
+                        <button class="btn-filtro active" data-filtro="todas">Todas</button>
+                        <button class="btn-filtro" data-filtro="guardadas">Guardadas</button>
+                        <button class="btn-filtro" data-filtro="noGuardadas">No guardadas</button>
+                        <button class="btn-filtro" data-filtro="indoor">Indoor</button>
+                        <button class="btn-filtro" data-filtro="outdoor">Outdoor</button>
+                        <button class="btn-filtro" data-filtro="individual">Individual</button>
+                        <button class="btn-filtro" data-filtro="grupo">Grupo</button>
+                    </div>
+                </div>
+
+                <!-- LISTA DE ACTIVIDADES -->
+                <div id="listaActividades" class="row g-3">
+                    <!-- JS insertará las cards -->
+                </div>
+
+            </div>
+        </div>
+
+        <!-- MODAL REALIZAR ACTIVIDAD -->
+        <div class="modal fade" id="modalRealizar" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="realizarNombre"></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+
+                        <!-- PASO 1A — Era recomendación -->
+                        <div id="paso1a" class="d-none">
+                            <p class="mb-2 text-muted">Cuando te la recomendamos te sentías:</p>
+                            <div class="alert alert-info d-flex align-items-center gap-2 mb-3">
+                                <span id="emocionRecomendacion" style="font-size:1.5rem;"></span>
+                                <span id="nombreEmocionRec" class="fw-500"></span>
+                            </div>
+                            <p class="mb-3">¿Sigue siendo así?</p>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-outline-success w-50" id="btnSigueSiendo">Sí, sigue igual</button>
+                                <button class="btn btn-outline-secondary w-50" id="btnHaCambiado">No, ha cambiado</button>
+                            </div>
+                        </div>
+
+                        <!-- PASO 1B — Selector emoción before -->
+                        <div id="paso1b" class="d-none">
+                            <p class="mb-3">¿Cómo te sentías antes de realizarla?</p>
+                            <div class="d-flex gap-2 flex-wrap mb-3">
+                                <input type="radio" class="btn-check" name="emotionBefore" id="eb1" value="1">
+                                <label class="btn btn-sm btn-outline-success" for="eb1">😊 Feliz</label>
+                                <input type="radio" class="btn-check" name="emotionBefore" id="eb2" value="2">
+                                <label class="btn btn-sm btn-outline-info" for="eb2">😌 Calma</label>
+                                <input type="radio" class="btn-check" name="emotionBefore" id="eb3" value="3">
+                                <label class="btn btn-sm btn-outline-secondary" for="eb3">😐 Neutral</label>
+                                <input type="radio" class="btn-check" name="emotionBefore" id="eb4" value="4">
+                                <label class="btn btn-sm btn-outline-primary" for="eb4">😔 Triste</label>
+                                <input type="radio" class="btn-check" name="emotionBefore" id="eb5" value="5">
+                                <label class="btn btn-sm btn-outline-warning" for="eb5">😣 Estrés</label>
+                                <input type="radio" class="btn-check" name="emotionBefore" id="eb6" value="6">
+                                <label class="btn btn-sm btn-outline-danger" for="eb6">😰 Ansiedad</label>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Nivel de energía</label>
+                                <select id="energiaBefore" class="form-select">
+                                    <option value="">Selecciona...</option>
+                                    <option value="baja">Baja</option>
+                                    <option value="media">Media</option>
+                                    <option value="alta">Alta</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label d-flex justify-content-between">
+                                    <span>Intensidad emocional</span>
+                                    <span id="lblIntensidadBefore" class="text-muted">3</span>
+                                </label>
+                                <input type="range" class="form-range" id="intensidadBefore"
+                                    min="1" max="5" value="3"
+                                    oninput="document.getElementById('lblIntensidadBefore').textContent=this.value">
+                            </div>
+                            <p id="errorPaso1b" class="text-danger small d-none">Selecciona una emoción, nivel de energía e intensidad</p>
+                        </div>
+
+                        <!-- PASO 2 — Emoción after -->
+                        <div id="paso2" class="d-none">
+                            <p class="mb-3">¿Cómo te sientes ahora?</p>
+                            <div class="d-flex gap-2 flex-wrap mb-3">
+                                <input type="radio" class="btn-check" name="emotionAfter" id="ea1" value="1">
+                                <label class="btn btn-sm btn-outline-success" for="ea1">😊 Feliz</label>
+                                <input type="radio" class="btn-check" name="emotionAfter" id="ea2" value="2">
+                                <label class="btn btn-sm btn-outline-info" for="ea2">😌 Calma</label>
+                                <input type="radio" class="btn-check" name="emotionAfter" id="ea3" value="3">
+                                <label class="btn btn-sm btn-outline-secondary" for="ea3">😐 Neutral</label>
+                                <input type="radio" class="btn-check" name="emotionAfter" id="ea4" value="4">
+                                <label class="btn btn-sm btn-outline-primary" for="ea4">😔 Triste</label>
+                                <input type="radio" class="btn-check" name="emotionAfter" id="ea5" value="5">
+                                <label class="btn btn-sm btn-outline-warning" for="ea5">😣 Estrés</label>
+                                <input type="radio" class="btn-check" name="emotionAfter" id="ea6" value="6">
+                                <label class="btn btn-sm btn-outline-danger" for="ea6">😰 Ansiedad</label>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Nivel de energía</label>
+                                <select id="energiaAfter" class="form-select">
+                                    <option value="">Selecciona...</option>
+                                    <option value="baja">Baja</option>
+                                    <option value="media">Media</option>
+                                    <option value="alta">Alta</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label d-flex justify-content-between">
+                                    <span>Intensidad emocional</span>
+                                    <span id="lblIntensidadAfter" class="text-muted">3</span>
+                                </label>
+                                <input type="range" class="form-range" id="intensidadAfter"
+                                    min="1" max="5" value="3"
+                                    oninput="document.getElementById('lblIntensidadAfter').textContent=this.value">
+                            </div>
+                            <p id="errorPaso2" class="text-danger small d-none">Selecciona una emoción y nivel de energía</p>
+                        </div>
+
+                        <!-- PASO 3 — Rating -->
+                        <div id="paso3" class="d-none">
+                            <p class="mb-3">¿Te ha gustado la actividad?</p>
+                            <div class="d-flex gap-2 flex-wrap mb-4">
+                                <input type="radio" class="btn-check" name="rating" id="r1" value="1">
+                                <label class="btn btn-sm btn-outline-secondary" for="r1">⭐</label>
+                                <input type="radio" class="btn-check" name="rating" id="r2" value="2">
+                                <label class="btn btn-sm btn-outline-secondary" for="r2">⭐⭐</label>
+                                <input type="radio" class="btn-check" name="rating" id="r3" value="3">
+                                <label class="btn btn-sm btn-outline-secondary" for="r3">⭐⭐⭐</label>
+                                <input type="radio" class="btn-check" name="rating" id="r4" value="4">
+                                <label class="btn btn-sm btn-outline-secondary" for="r4">⭐⭐⭐⭐</label>
+                                <input type="radio" class="btn-check" name="rating" id="r5" value="5">
+                                <label class="btn btn-sm btn-outline-secondary" for="r5">⭐⭐⭐⭐⭐</label>
+                            </div>
+                            <p id="errorPaso3" class="text-danger small d-none">Selecciona una valoración</p>
+                        </div>
+
+                        <!-- PASO 4 — Resultado -->
+                        <div id="paso4" class="d-none text-center py-3">
+                            <div id="resultadoIcono" style="font-size:3rem;" class="mb-2"></div>
+                            <div id="resultadoTexto" class="fw-500"></div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" id="btnCancelarRealizar" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-primary" id="btnSiguiente">Siguiente</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+        <script src="/js/realizarActividad.js"></script>
+        <script src="/js/actividades.js"></script>
+    </body>
+</html>

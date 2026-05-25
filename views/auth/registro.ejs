@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <title>Registro</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <link href="css/colors.css" rel="stylesheet"/>
+    </head>
+    <body>
+        <section class="vh-100 gradient-custom">
+            <div class="container h-100">
+                <div class="row h-100 d-flex justify-content-center align-items-center">
+                    <div class="col-12 col-md-9 col-lg-7 col-xl-6">
+                        <div class="card">
+                            <div class="card-body p-md-5">
+                                <h2 class="text-center mb-4">CREA TU CUENTA</h2>
+                                <% if (error) { %>
+                                    <div class="alert alert-danger"><%= error %></div>
+                                <% } %>
+                                <form action="/registro" method="POST">
+                                    <div class="d-flex flex-column flex-sm-row gap-3 mb-4">
+                                        <div class="form-floating flex-fill">
+                                            <input type="text" name="nombre" id="name" class="form-control" placeholder="Nombre" required/>
+                                            <label for="name">Nombre</label>
+                                        </div>
+                                        <div class="form-floating flex-fill">
+                                            <input type="text" name="apellidos" id="apellidos" class="form-control" placeholder="Apellidos" required/>
+                                            <label for="apellidos">Apellidos</label>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex flex-column flex-sm-row gap-3 mb-4">
+                                        <div class="flex-fill">
+                                            <select id="pais" name="pais" class="form-select form-control-lg">
+                                                <option value="" disabled selected>País</option>
+                                                <option value="España">España</option>
+                                            </select>
+                                        </div>
+                                        <div class="flex-fill">
+                                            <select id="ciudad" name="ciudad" class="form-select form-control-lg">
+                                                <option value="" disabled selected>Ciudad</option>
+                                                <option value="Madrid">Madrid</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-floating mb-4">
+                                        <input type="email" name="email" id="email" class="form-control" placeholder="Correo electrónico" required/>
+                                        <label for="email">Correo electrónico</label>
+                                    </div>
+                                    <div class="form-floating mb-4">
+                                        <input type="password" id="password" name="password" class="form-control" placeholder="Contraseña" required/>
+                                        <label for="password">Contraseña</label>
+                                    </div>
+                                    <div class="form-floating mb-4">
+                                        <input type="password" id="repetir" name="repetir" class="form-control" placeholder="Repetir contraseña" required/>
+                                        <label for="repetir">Repetir contraseña</label>
+                                    </div>
+                                    <div class="d-flex justify-content-end pt-3 flex-column flex-sm-row gap-2">
+                                        <button type="reset" class="btn border border-dark">Restablecer</button>
+                                        <button type="submit" class="btn gradient-custom">Enviar</button>
+                                    </div>
+                                    <p class="text-center text-muted mt-5 mb-0">¿Ya tienes cuenta? 
+                                        <a href="/login" class="fw-bold text-body">
+                                            <u>Inicia sesión</u>
+                                        </a>
+                                    </p>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <script>
+            document.querySelector('form').addEventListener('submit', function(e) {
+                const p1 = document.getElementById('password').value;
+                const p2 = document.getElementById('repetir').value;
+                if (p1 !== p2) {
+                    e.preventDefault();
+                    alert('Las contraseñas no coinciden');
+                }
+            });
+        </script>
+    </body>
+</html>

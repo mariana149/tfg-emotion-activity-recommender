@@ -1,0 +1,27 @@
+<nav class="admin-navbar">
+    <a href="/admin/dashboard" class="admin-navbar-brand">Panel Admin</a>
+
+    <!-- Menú móvil -->
+    <button class="admin-navbar-toggler d-md-none" data-bs-toggle="collapse" data-bs-target="#mobileMenu">
+        <i class="bi bi-list"></i>
+    </button>
+    
+    <div class="admin-navbar-right d-none d-md-flex">
+        <a href="/admin/perfil">
+            <img src="<%= user.foto || '/img/defaultFoto.png' %>" class="admin-navbar-avatar" id="avatarNavbar">
+        </a>
+    </div>
+</nav>
+
+<!-- Menú móvil desplegable -->
+<div class="collapse d-md-none" id="mobileMenu">
+    <div class="admin-mobile-menu">
+        <a href="/admin/dashboard" class="admin-mobile-link">Dashboard</a>
+        <a href="/admin/usuarios" class="admin-mobile-link">Usuarios</a>
+        <a href="/admin/actividades" class="admin-mobile-link">Actividades</a>
+        <a href="/admin/propuestas" class="admin-mobile-link">Propuestas</a>
+        <a href="/admin/motor" class="admin-mobile-link">Motor rec.</a>
+        <a href="/admin/perfil" class="admin-mobile-link">Mi perfil</a>
+        <a href="/logout" class="admin-mobile-link">Cerrar sesión</a>
+    </div>
+</div>

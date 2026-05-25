@@ -1,0 +1,33 @@
+<nav class="usuario-navbar">
+    <a href="/inicio" class="usuario-navbar-brand"><i class="bi bi-heart-pulse"></i></a>
+
+    <button class="usuario-navbar-toggler d-md-none" data-bs-toggle="collapse" data-bs-target="#mobileMenuUsuario">
+        <i class="bi bi-list"></i>
+    </button>
+
+    <div class="usuario-navbar-right d-none d-md-flex">
+        <a href="/perfil">
+            <img
+                src="<%= user.foto || '/img/defaultFoto.png' %>"
+                class="usuario-navbar-avatar"
+                id="avatarNavbar"
+            >
+        </a>
+    </div>
+</nav>
+
+<div class="collapse d-md-none" id="mobileMenuUsuario">
+    <div class="usuario-mobile-menu">
+        <a href="/inicio" class="usuario-mobile-link">Inicio</a>
+        <a href="/emociones" class="usuario-mobile-link">Emociones</a>
+        <a href="/actividades" class="usuario-mobile-link">Actividades</a>
+        <a href="/mis-actividades" class="usuario-mobile-link">Mis actividades</a>
+        <a href="/recomendaciones" class="usuario-mobile-link">Recomendaciones</a>
+        <a href="/historial-recomendaciones" class="usuario-mobile-link">Historial</a>
+        <a href="/social" class="usuario-mobile-link">Mis conexiones</a>
+        <a href="/buscar-usuarios" class="usuario-mobile-link">Buscar usuarios</a>
+        <a href="/notificaciones" class="usuario-mobile-link">Notificaciones</a>
+        <a href="/perfil" class="usuario-mobile-link">Mi perfil</a>
+        <a href="/logout" class="usuario-mobile-link">Cerrar sesión</a>
+    </div>
+</div>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <title>Inicio de sesión</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+        <link href="css/colors.css" rel="stylesheet"/>
+    </head>
+    <body>
+        <section class="vh-100">
+            <div class="container-fluid h-100">
+                <div class="row h-100">
+                    <div class="col-12 col-md-6  py-3 py-md-5 login-color">
+                            <div class="px-2 px-sm-3 px-md-4 px-lg-5 ms-0 ms-lg-4 m-5">
+                                <h2 class="fw-bold mb-1">Bienvenido,</h2>
+                                <h2>nos alegra tenerte aquí</h2>
+                            </div>
+                            <div class=" px-2 px-sm-3 px-md-4 px-lg-5 ms-0 ms-lg-4 mt-4 mt-lg-5 pt-3 pt-lg-5 mt-lg-n5">
+                                <form method="POST" action="/login">
+                                <h5 class="fw-normal pb-2">Inicie sesión en su cuenta</h5>
+
+                                <div class="form-floating mb-4">
+                                    <input type="email" name="email" id="email" class="form-control" placeholder="Correo electrónico" required/>
+                                    <label for="email">Correo electrónico</label>
+                                </div>
+
+                                <div class="form-floating mb-4">
+                                    <input type="password" name="password" id="password" class="form-control" placeholder="Contraseña" required/>
+                                    <label for="password">Contraseña</label>
+                                </div>
+                                <% if (flash) { %>
+                                    <div class="alert alert-<%= flash.type === 'error' ? 'danger' : 'success' %> alert-dismissible fade show" role="alert">
+                                        <i class="bi bi-exclamation-circle me-2"></i><%= flash.msg %>
+                                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                                    </div>
+                                <% } %>
+                                <div class="text-center mb-5 pb-1 pt-1">
+                                    <button class="btn w-100 mb-3 bg-primary gradient-custom" type="submit">ENTRAR</button>
+                                </div>
+
+                                <div class="d-flex align-items-center justify-content-center pb-4">
+                                    <p class="mb-0 me-2">¿No tienes cuenta?</p>
+                                    <a href="/registro" class="fw-bold text-body">
+                                            <u>Crea tu cuenta</u>
+                                    </a>
+                                </div>
+                            </form>
+                            <p class="mt-4 mb-0 small text-muted opacity-50 disclaimer">
+                                Esta aplicación es una herramienta de apoyo al bienestar personal y no sustituye la atención de un profesional de la salud mental.
+                            </p>
+                            </div>
+                            
+                    </div>
+                    <div class="col-12 col-md-6 d-flex align-items-center gradient-custom">
+                        <div class="px-2 px-sm-3 px-md-4 px-lg-5 mx-md-4">
+                            <h2 class="fw-bold mb-3 login-hero-title">¿Cómo te sientes hoy?</h2>
+                            <div class="login-hero-divider"></div>
+                            <p class="fade-in mb-0 login-hero-text">
+                                Descubre actividades pensadas para ti, sigue tu evolución emocional y conecta con personas con intereses similares.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    </body>
+
+</html>
